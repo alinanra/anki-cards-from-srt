@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio SRT Processor</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.9/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function AudioSRTApp() {
+            const [mp3File, setMp3File] = React.useState(null);
+            const [srtPtFile, setSrtPtFile] = React.useState(null);
+            const [srtEnFile, setSrtEnFile] = React.useState(null);
+            const [outputFolder, setOutputFolder] = React.useState(null);
+            const [status, setStatus] = React.useState("Ready");
+
+            const handleFileChange = (setter) => (e) => {
+                const file = e.target.files[0];
+                setter(file);
+            };
+
+            const handleFolderChange = (e) => {
+                const folder = e.target.files[0]; // Note: Folder selection is limited in browsers
+                setOutputFolder(folder);
+            };
+
+            const processFiles = () => {
+                if (!mp3File || !srtPtFile || !srtEnFile || !outputFolder) {
+                    setStatus("Error: All fields must be filled!");
+                    alert("Error: All fields must be filled!");
+                    return;
+                }
+
+                setStatus("Preparing to process...");
+                // Note: Actual processing requires a backend server due to moviepy and file I/O dependencies.
+                // Below is a placeholder for an API call to a server running the Python logic.
+                /*
+                const formData = new FormData();
+                formData.append("mp3", mp3File);
+                formData.append("srt_pt", srtPtFile);
+                formData.append("srt_en", srtEnFile);
+                formData.append("output_folder", outputFolder.webkitRelativePath || "output");
+
+                fetch("/api/process", {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            setStatus("Processing complete! Check output folder.");
+                            alert("Success: Files processed successfully!");
+                        } else {
+                            setStatus(`Error: ${data.error}`);
+                            alert(`Error: ${data.error}`);
+                        }
+                    })
+                    .catch((error) => {
+                        setStatus(`Error: ${error.message}`);
+                        alert(`Error: ${error.message}`);
+                    });
+                */
+                setStatus("Note: Processing requires a backend server. Files selected successfully.");
+                alert("Note: Upload files to a server running the Python processing logic.");
+            };
+
+            return (
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+                    <h1 className="text-2xl font-bold mb-6 text-center">Audio SRT Processor</h1>
+                    
+                    <div className="grid grid-cols-3 gap-4 mb-4 items-center">
+                        <label className="text-right font-medium">MP3 File:</label>
+                        <input
+                            type="file"
+                            accept=".mp3"
+                            onChange={handleFileChange(setMp3File)}
+                            className="col-span-2 p-2 border rounded"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-4 items-center">
+                        <label className="text-right font-medium">Portuguese SRT:</label>
+                        <input
+                            type="file"
+                            accept=".srt"
+                            onChange={handleFileChange(setSrtPtFile)}
+                            className="col-span-2 p-2 border rounded"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-4 items-center">
+                        <label className="text-right font-medium">English SRT:</label>
+                        <input
+                            type="file"
+                            accept=".srt"
+                            onChange={handleFileChange(setSrtEnFile)}
+                            className="col-span-2 p-2 border rounded"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-4 items-center">
+                        <label className="text-right font-medium">Output Folder:</label>
+                        <input
+                            type="file"
+                            webkitdirectory="true"
+                            onChange={handleFolderChange}
+                            className="col-span-2 p-2 border rounded"
+                        />
+                    </div>
+
+                    <div className="text-center">
+                        <button
+                            onClick={processFiles}
+                            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+                        >
+                            Process
+                        </button>
+                    </div>
+
+                    <p className="mt-6 text-center text-gray-600 break-words">{status}</p>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<AudioSRTApp />, document.getElementById("root"));
+    </script>
+</body>
+</html>
